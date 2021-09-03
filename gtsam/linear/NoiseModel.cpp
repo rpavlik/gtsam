@@ -20,7 +20,6 @@
 #include <gtsam/base/timing.h>
 
 #include <boost/format.hpp>
-#include <boost/make_shared.hpp>
 
 #include <cmath>
 #include <iostream>
@@ -261,7 +260,8 @@ Diagonal::shared_ptr Diagonal::Variances(const Vector& variances, bool smart) {
     if ((variances.array() == variances(0)).all())
       return Isotropic::Variance(variances.size(), variances(0), true);
   }
-  return Diagonal::shared_ptr(new Diagonal(variances.cwiseSqrt()));
+  Diagonal::shared_ptr ret(new Diagonal(variances.cwiseSqrt()));
+  return ret;
 }
 
 /* ************************************************************************* */
@@ -275,7 +275,8 @@ Diagonal::shared_ptr Diagonal::Sigmas(const Vector& sigmas, bool smart) {
     if ((sigmas.array() == sigmas(0)).all())
       return Isotropic::Sigma(sigmas.size(), sigmas(0), true);
   }
-  return boost::make_shared<Diagonal>(sigmas);
+  Diagonal::shared_ptr ret(new Diagonal(sigmas));
+  return ret;
 }
 
 /* ************************************************************************* */
