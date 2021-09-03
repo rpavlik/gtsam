@@ -256,34 +256,26 @@ Diagonal::Diagonal(const Vector& sigmas)
 
 /* ************************************************************************* */
 Diagonal::shared_ptr Diagonal::Variances(const Vector& variances, bool smart) {
-  auto makeFull = [&] {
-    return Diagonal::shared_ptr(new Diagonal(variances.cwiseSqrt()));
-  };
   if (smart) {
     // check whether all the same entry
-    size_t n = variances.size();
-    for (size_t j = 1; j < n; j++)
-      if (variances(j) != variances(0)) return makeFull();
-    return Isotropic::Variance(n, variances(0), true);
+    if ((variances.array() == variances(0)).all())
+      return Isotropic::Variance(variances.size(), variances(0), true);
   }
-  return makeFull();
+  return Diagonal::shared_ptr(new Diagonal(variances.cwiseSqrt()));
 }
 
 /* ************************************************************************* */
 Diagonal::shared_ptr Diagonal::Sigmas(const Vector& sigmas, bool smart) {
-  auto makeFull = [&] { return Diagonal::shared_ptr(new Diagonal(sigmas)); };
-  if (!smart)
-    return makeFull();
-  size_t n = sigmas.size();
-  if (n==0) return makeFull();
-  // look for zeros to make a constraint
-  for (size_t j=0; j< n; ++j)
-    if (sigmas(j)<1e-8)
+  if (smart && sigmas.size() > 0) {
+    // look for zeros to make a constraint
+    if ((sigmas.array() < 1e-8).any())
       return Constrained::MixedSigmas(sigmas);
-  // check whether all the same entry
-  for (size_t j = 1; j < n; j++)
-    if (sigmas(j) != sigmas(0)) return makeFull();
-  return Isotropic::Sigma(n, sigmas(0), true);
+      
+    // check whether all the same entry
+    if ((sigmas.array() == sigmas(0)).all())
+      return Isotropic::Sigma(sigmas.size(), sigmas(0), true);
+  }
+  return boost::make_shared<Diagonal>(sigmas);
 }
 
 /* ************************************************************************* */
