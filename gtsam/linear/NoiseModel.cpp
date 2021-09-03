@@ -69,6 +69,9 @@ boost::optional<Vector> checkIfDiagonal(const Matrix M) {
 }
 
 /* ************************************************************************* */
+Base::~Base() = default;
+
+
 Vector Base::sigmas() const {
   throw("Base::sigmas: sigmas() not implemented for this noise model");
 }
@@ -79,6 +82,8 @@ double Base::squaredMahalanobisDistance(const Vector& v) const {
   Vector w = whiten(v);
   return w.dot(w);
 }
+
+Gaussian::~Gaussian() = default;
 
 /* ************************************************************************* */
 Gaussian::shared_ptr Gaussian::SqrtInformation(const Matrix& R, bool smart) {
@@ -247,6 +252,8 @@ Diagonal::Diagonal() :
 {
 }
 
+Diagonal::~Diagonal() = default;
+
 /* ************************************************************************* */
 Diagonal::Diagonal(const Vector& sigmas)
     : Gaussian(sigmas.size()),
@@ -326,6 +333,8 @@ static void fix(const Vector& sigmas, Vector& precisions, Vector& invsigmas) {
     }
 }
 }
+
+Constrained::~Constrained() = default;
 
 /* ************************************************************************* */
 Constrained::Constrained(const Vector& sigmas)
@@ -563,6 +572,8 @@ SharedDiagonal Constrained::QR(Matrix& Ab) const {
 /* ************************************************************************* */
 // Isotropic
 /* ************************************************************************* */
+Isotropic::~Isotropic() = default;
+
 Isotropic::shared_ptr Isotropic::Sigma(size_t dim, double sigma, bool smart)  {
   if (smart && std::abs(sigma-1.0)<1e-9) return Unit::Create(dim);
   shared_ptr ret(new Isotropic(dim, sigma));
@@ -619,13 +630,18 @@ void Isotropic::WhitenInPlace(Eigen::Block<Matrix> H) const {
 /* ************************************************************************* */
 // Unit
 /* ************************************************************************* */
-void Unit::print(const std::string& name) const {
+Unit::~Unit() = default;
+
+void Unit::print(const std::string &name) const
+{
   cout << name << "unit (" << dim_ << ") " << endl;
 }
 
 /* ************************************************************************* */
 // Robust
 /* ************************************************************************* */
+
+Robust::~Robust() = default;
 
 void Robust::print(const std::string& name) const {
   robust_->print(name);
