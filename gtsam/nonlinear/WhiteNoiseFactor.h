@@ -74,11 +74,11 @@ namespace gtsam {
         Key j1, Key j2) {
       double e = u - z, e2 = e * e;
       double c = 2 * logSqrt2PI - log(p) + e2 * p;
-      Vector g1 = (Vector(1) << -e * p).finished();
-      Vector g2 = (Vector(1) <<  0.5 / p - 0.5 * e2).finished();
-      Matrix G11 = (Matrix(1, 1) << p).finished();
-      Matrix G12 = (Matrix(1, 1) << e).finished();
-      Matrix G22 = (Matrix(1, 1) << 0.5 / (p * p)).finished();
+      Vector1 g1(-e * p);
+      Vector1 g2( 0.5 / p - 0.5 * e2);
+      Matrix11 G11(p);
+      Matrix11 G12(e);
+      Matrix11 G22(0.5 / (p * p));
       HessianFactor::shared_ptr ret(
           new HessianFactor(j1, j2, G11, G12, g1, G22, g2, c));
       return ret;
