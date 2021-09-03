@@ -35,10 +35,18 @@ namespace lago {
 static const Matrix I = I_1x1;
 static const Matrix I3 = I_3x3;
 
-static const noiseModel::Diagonal::shared_ptr priorOrientationNoise =
-    noiseModel::Diagonal::Sigmas((Vector(1) << 0).finished());
-static const noiseModel::Diagonal::shared_ptr priorPose2Noise =
-    noiseModel::Diagonal::Variances(Vector3(1e-6, 1e-6, 1e-8));
+static noiseModel::Diagonal::shared_ptr getPriorOrientationNoise()
+{
+  static const noiseModel::Diagonal::shared_ptr priorOrientationNoise =
+      noiseModel::Diagonal::Sigmas((Vector(1) << 0).finished());
+  return priorOrientationNoise;
+}
+static noiseModel::Diagonal::shared_ptr getPriorPose2Noise()
+{
+  static const noiseModel::Diagonal::shared_ptr priorPose2Noise =
+      noiseModel::Diagonal::Variances(Vector3(1e-6, 1e-6, 1e-8));
+  return priorPose2Noise;
+}
 
 /* ************************************************************************* */
 /**
@@ -190,7 +198,7 @@ GaussianFactorGraph buildLinearOrientationGraph(
     lagoGraph.add(key1, -I, key2, I, deltaThetaRegularized, model_deltaTheta);
   }
   // prior on the anchor orientation
-  lagoGraph.add(initialize::kAnchorKey, I, (Vector(1) << 0.0).finished(), priorOrientationNoise);
+  lagoGraph.add(initialize::kAnchorKey, I, (Vector(1) << 0.0).finished(), getPriorOrientationNoise());
   return lagoGraph;
 }
 
@@ -315,7 +323,7 @@ Values computePoses(const NonlinearFactorGraph& pose2graph,
   }
   // add prior
   linearPose2graph.add(initialize::kAnchorKey, I3, Vector3(0.0, 0.0, 0.0),
-      priorPose2Noise);
+      getPriorPose2Noise());
 
   // optimize
   VectorValues posesLago = linearPose2graph.optimize();
