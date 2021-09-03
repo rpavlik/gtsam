@@ -152,7 +152,8 @@ static void getDeltaThetaAndNoise(NonlinearFactor::shared_ptr factor,
   if (!pose2Between)
     throw invalid_argument(
         "buildLinearOrientationGraph: invalid between factor!");
-  deltaTheta = (Vector(1) << pose2Between->measured().theta()).finished();
+
+  deltaTheta = Vector1::Constant(pose2Between->measured().theta());
 
   // Retrieve the noise model for the relative rotation
   SharedNoiseModel model = pose2Between->noiseModel();
@@ -161,7 +162,7 @@ static void getDeltaThetaAndNoise(NonlinearFactor::shared_ptr factor,
   if (!diagonalModel)
     throw invalid_argument("buildLinearOrientationGraph: invalid noise model "
         "(current version assumes diagonal noise model)!");
-  Vector std_deltaTheta = (Vector(1) << diagonalModel->sigma(2)).finished(); // std on the angular measurement
+  Vector1 std_deltaTheta = Vector1::Constant(diagonalModel->sigma(2)); // std on the angular measurement
   model_deltaTheta = noiseModel::Diagonal::Sigmas(std_deltaTheta);
 }
 
@@ -193,12 +194,11 @@ GaussianFactorGraph buildLinearOrientationGraph(
         - orientationsToRoot.at(key2); // this coincides to summing up measurements along the cycle induced by the chord
     double k = boost::math::round(k2pi_noise / (2 * M_PI));
     //if (k2pi_noise - 2*k*M_PI > 1e-5) cout << k2pi_noise - 2*k*M_PI << endl; // for debug
-    Vector deltaThetaRegularized = (Vector(1)
-        << key1_DeltaTheta_key2 - 2 * k * M_PI).finished();
+    Vector deltaThetaRegularized = Vector1::Constant(key1_DeltaTheta_key2 - 2 * k * M_PI);
     lagoGraph.add(key1, -I, key2, I, deltaThetaRegularized, model_deltaTheta);
   }
   // prior on the anchor orientation
-  lagoGraph.add(initialize::kAnchorKey, I, Vector::Zero(1), getPriorOrientationNoise());
+  lagoGraph.add(initialize::kAnchorKey, I, Vector1::Zero(), getPriorOrientationNoise());
   return lagoGraph;
 }
 
@@ -304,9 +304,10 @@ Values computePoses(const NonlinearFactorGraph& pose2graph,
       double dx = pose2Between->measured().x();
       double dy = pose2Between->measured().y();
 
-      Vector globalDeltaCart = //
-          (Vector(2) << c1 * dx - s1 * dy, s1 * dx + c1 * dy).finished();
-      Vector b = (Vector(3) << globalDeltaCart, linearDeltaRot).finished(); // rhs
+      Vector2 globalDeltaCart{c1 * dx - s1 * dy,
+                              s1 * dx + c1 * dy};
+      Vector3 b;
+      b << globalDeltaCart, linearDeltaRot;
       Matrix J1 = -I3;
       J1(0, 2) = s1 * dx + c1 * dy;
       J1(1, 2) = -c1 * dx + s1 * dy;
@@ -322,7 +323,7 @@ Values computePoses(const NonlinearFactorGraph& pose2graph,
     }
   }
   // add prior
-  linearPose2graph.add(initialize::kAnchorKey, I3, Vector3(0.0, 0.0, 0.0),
+  linearPose2graph.add(initialize::kAnchorKey, I3, Vector3::Zero(),
       getPriorPose2Noise());
 
   // optimize
