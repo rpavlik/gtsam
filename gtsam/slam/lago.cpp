@@ -38,7 +38,7 @@ static const Matrix I3 = I_3x3;
 static noiseModel::Diagonal::shared_ptr getPriorOrientationNoise()
 {
   static const noiseModel::Diagonal::shared_ptr priorOrientationNoise =
-      noiseModel::Diagonal::Sigmas((Vector(1) << 0).finished());
+      noiseModel::Diagonal::Sigmas(Vector::Zero());
   return priorOrientationNoise;
 }
 static noiseModel::Diagonal::shared_ptr getPriorPose2Noise()
@@ -198,7 +198,7 @@ GaussianFactorGraph buildLinearOrientationGraph(
     lagoGraph.add(key1, -I, key2, I, deltaThetaRegularized, model_deltaTheta);
   }
   // prior on the anchor orientation
-  lagoGraph.add(initialize::kAnchorKey, I, (Vector(1) << 0.0).finished(), getPriorOrientationNoise());
+  lagoGraph.add(initialize::kAnchorKey, I, Vector::Zero(1), getPriorOrientationNoise());
   return lagoGraph;
 }
 
