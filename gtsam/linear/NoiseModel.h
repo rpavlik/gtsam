@@ -444,10 +444,12 @@ namespace gtsam {
        * standard devations, some of which might be zero
        */
       static shared_ptr MixedVariances(const Vector& mu, const Vector& variances) {
-        return shared_ptr(new Constrained(mu, variances.cwiseSqrt()));
+        shared_ptr ret(new Constrained(mu, variances.cwiseSqrt()));
+        return ret;
       }
       static shared_ptr MixedVariances(const Vector& variances) {
-        return shared_ptr(new Constrained(variances.cwiseSqrt()));
+        shared_ptr ret(new Constrained(variances.cwiseSqrt()));
+        return ret;
       }
 
       /**
@@ -465,17 +467,20 @@ namespace gtsam {
 
       /** Fully constrained variations */
       static shared_ptr All(size_t dim) {
-        return shared_ptr(new Constrained(Vector::Constant(dim, 1000.0), Vector::Constant(dim,0)));
+        shared_ptr ret(new Constrained(Vector::Constant(dim, 1000.0), Vector::Constant(dim,0)));
+        return ret;
       }
 
       /** Fully constrained variations */
       static shared_ptr All(size_t dim, const Vector& mu) {
-        return shared_ptr(new Constrained(mu, Vector::Constant(dim,0)));
+        shared_ptr ret(new Constrained(mu, Vector::Constant(dim,0)));
+        return ret;
       }
 
       /** Fully constrained variations with a mu parameter */
       static shared_ptr All(size_t dim, double mu) {
-        return shared_ptr(new Constrained(Vector::Constant(dim, mu), Vector::Constant(dim,0)));
+        shared_ptr ret(new Constrained(Vector::Constant(dim, mu), Vector::Constant(dim,0)));
+        return ret;
       }
 
       void print(const std::string& name) const override;
@@ -606,7 +611,8 @@ namespace gtsam {
        * Create a unit covariance noise model
        */
       static shared_ptr Create(size_t dim) {
-        return shared_ptr(new Unit(dim));
+        shared_ptr ret(new Unit(dim));
+        return ret;
       }
 
       /// true if a unit noise model, saves slow/clumsy dynamic casting

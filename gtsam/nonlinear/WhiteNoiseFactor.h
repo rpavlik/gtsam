@@ -79,8 +79,9 @@ namespace gtsam {
       Matrix G11 = (Matrix(1, 1) << p).finished();
       Matrix G12 = (Matrix(1, 1) << e).finished();
       Matrix G22 = (Matrix(1, 1) << 0.5 / (p * p)).finished();
-      return HessianFactor::shared_ptr(
+      HessianFactor::shared_ptr ret(
           new HessianFactor(j1, j2, G11, G12, g1, G22, g2, c));
+      return ret;
     }
 
     /// @name Standard Constructors
