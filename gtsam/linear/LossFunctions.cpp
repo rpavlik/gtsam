@@ -124,8 +124,10 @@ void Base::reweight(Matrix &A1, Matrix &A2, Matrix &A3, Vector &error) const {
 void Null::print(const std::string &s="") const
 { cout << s << "null ()" << endl; }
 
-Null::shared_ptr Null::Create()
-{ return shared_ptr(new Null()); }
+Null::shared_ptr Null::Create() {
+  shared_ptr ret(new Null()); 
+  return ret;
+}
 
 /* ************************************************************************* */
 // Fair
@@ -157,8 +159,10 @@ bool Fair::equals(const Base &expected, double tol) const {
   return std::abs(c_ - p->c_ ) < tol;
 }
 
-Fair::shared_ptr Fair::Create(double c, const ReweightScheme reweight)
-{ return shared_ptr(new Fair(c, reweight)); }
+Fair::shared_ptr Fair::Create(double c, const ReweightScheme reweight) {
+  shared_ptr ret(new Fair(c, reweight)); 
+  return ret;
+}
 
 /* ************************************************************************* */
 // Huber
@@ -195,7 +199,8 @@ bool Huber::equals(const Base &expected, double tol) const {
 }
 
 Huber::shared_ptr Huber::Create(double c, const ReweightScheme reweight) {
-  return shared_ptr(new Huber(c, reweight));
+  shared_ptr ret(new Huber(c, reweight));
+  return ret;
 }
 
 /* ************************************************************************* */
@@ -228,7 +233,8 @@ bool Cauchy::equals(const Base &expected, double tol) const {
 }
 
 Cauchy::shared_ptr Cauchy::Create(double c, const ReweightScheme reweight) {
-  return shared_ptr(new Cauchy(c, reweight));
+  shared_ptr ret(new Cauchy(c, reweight));
+  return ret;
 }
 
 /* ************************************************************************* */
@@ -271,7 +277,8 @@ bool Tukey::equals(const Base &expected, double tol) const {
 }
 
 Tukey::shared_ptr Tukey::Create(double c, const ReweightScheme reweight) {
-  return shared_ptr(new Tukey(c, reweight));
+  shared_ptr ret(new Tukey(c, reweight));
+  return ret;
 }
 
 /* ************************************************************************* */
@@ -301,7 +308,8 @@ bool Welsch::equals(const Base &expected, double tol) const {
 }
 
 Welsch::shared_ptr Welsch::Create(double c, const ReweightScheme reweight) {
-  return shared_ptr(new Welsch(c, reweight));
+  shared_ptr ret(new Welsch(c, reweight));
+  return ret;
 }
 
 /* ************************************************************************* */
@@ -335,7 +343,8 @@ bool GemanMcClure::equals(const Base &expected, double tol) const {
 }
 
 GemanMcClure::shared_ptr GemanMcClure::Create(double c, const ReweightScheme reweight) {
-  return shared_ptr(new GemanMcClure(c, reweight));
+  shared_ptr ret(new GemanMcClure(c, reweight));
+  return ret;
 }
 
 /* ************************************************************************* */
@@ -377,7 +386,8 @@ bool DCS::equals(const Base &expected, double tol) const {
 }
 
 DCS::shared_ptr DCS::Create(double c, const ReweightScheme reweight) {
-  return shared_ptr(new DCS(c, reweight));
+  shared_ptr ret(new DCS(c, reweight));
+  return ret;
 }
 
 /* ************************************************************************* */
@@ -416,7 +426,8 @@ bool L2WithDeadZone::equals(const Base &expected, double tol) const {
 }
 
 L2WithDeadZone::shared_ptr L2WithDeadZone::Create(double k, const ReweightScheme reweight) {
-  return shared_ptr(new L2WithDeadZone(k, reweight));
+  shared_ptr ret(new L2WithDeadZone(k, reweight));
+  return ret;
 }
 
 } // namespace mEstimator

@@ -91,7 +91,8 @@ Gaussian::shared_ptr Gaussian::SqrtInformation(const Matrix& R, bool smart) {
       return Diagonal::Sigmas(diagonal->array().inverse(), true);
   }
   // NOTE(frank): only reaches here if !(smart && diagonal)
-  return shared_ptr(new Gaussian(R.rows(), R));
+  shared_ptr ret(new Gaussian(R.rows(), R));
+  return ret;
 }
 
 /* ************************************************************************* */
@@ -107,7 +108,8 @@ Gaussian::shared_ptr Gaussian::Information(const Matrix& information, bool smart
   else {
     Eigen::LLT<Matrix> llt(information);
     Matrix R = llt.matrixU();
-    return shared_ptr(new Gaussian(n, R));
+    shared_ptr ret(new Gaussian(n, R));
+    return ret;
   }
 }
 
@@ -663,7 +665,8 @@ void Robust::WhitenSystem(Matrix& A1, Matrix& A2, Matrix& A3, Vector& b) const{
 
 Robust::shared_ptr Robust::Create(
 const RobustModel::shared_ptr &robust, const NoiseModel::shared_ptr noise){
-  return shared_ptr(new Robust(robust,noise));
+  shared_ptr ret(new Robust(robust,noise));
+  return ret;
 }
 
 /* ************************************************************************* */
