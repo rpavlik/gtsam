@@ -340,7 +340,8 @@ Constrained::Constrained(const Vector& mu, const Vector& sigmas)
 /* ************************************************************************* */
 Constrained::shared_ptr Constrained::MixedSigmas(const Vector& mu,
     const Vector& sigmas) {
-  return shared_ptr(new Constrained(mu, sigmas));
+  shared_ptr ret(new Constrained(mu, sigmas));
+  return ret;
 }
 
 /* ************************************************************************* */
@@ -562,13 +563,15 @@ SharedDiagonal Constrained::QR(Matrix& Ab) const {
 /* ************************************************************************* */
 Isotropic::shared_ptr Isotropic::Sigma(size_t dim, double sigma, bool smart)  {
   if (smart && std::abs(sigma-1.0)<1e-9) return Unit::Create(dim);
-  return shared_ptr(new Isotropic(dim, sigma));
+  shared_ptr ret(new Isotropic(dim, sigma));
+  return ret;
 }
 
 /* ************************************************************************* */
 Isotropic::shared_ptr Isotropic::Variance(size_t dim, double variance, bool smart)  {
   if (smart && std::abs(variance-1.0)<1e-9) return Unit::Create(dim);
-  return shared_ptr(new Isotropic(dim, sqrt(variance)));
+  shared_ptr ret(new Isotropic(dim, sqrt(variance)));
+  return ret;
 }
 
 /* ************************************************************************* */
