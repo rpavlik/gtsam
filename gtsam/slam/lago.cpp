@@ -38,7 +38,7 @@ static const Matrix I3 = I_3x3;
 static noiseModel::Diagonal::shared_ptr getPriorOrientationNoise()
 {
   static const noiseModel::Diagonal::shared_ptr priorOrientationNoise =
-      noiseModel::Diagonal::Sigmas(Vector::Zero());
+      noiseModel::Diagonal::Sigmas(Vector::Zero(1));
   return priorOrientationNoise;
 }
 static noiseModel::Diagonal::shared_ptr getPriorPose2Noise()
