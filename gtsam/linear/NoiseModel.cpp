@@ -268,19 +268,19 @@ Diagonal::shared_ptr Diagonal::Variances(const Vector& variances, bool smart) {
 
 /* ************************************************************************* */
 Diagonal::shared_ptr Diagonal::Sigmas(const Vector& sigmas, bool smart) {
-  if (smart) {
-    size_t n = sigmas.size();
-    if (n==0) goto full;
-    // look for zeros to make a constraint
-    for (size_t j=0; j< n; ++j)
-      if (sigmas(j)<1e-8)
-        return Constrained::MixedSigmas(sigmas);
-    // check whether all the same entry
-    for (size_t j = 1; j < n; j++)
-      if (sigmas(j) != sigmas(0)) goto full;
-    return Isotropic::Sigma(n, sigmas(0), true);
-  }
-  full: return Diagonal::shared_ptr(new Diagonal(sigmas));
+  auto makeFull = [&] { return Diagonal::shared_ptr(new Diagonal(sigmas)); };
+  if (!smart)
+    return makeFull();
+  size_t n = sigmas.size();
+  if (n==0) return makeFull();
+  // look for zeros to make a constraint
+  for (size_t j=0; j< n; ++j)
+    if (sigmas(j)<1e-8)
+      return Constrained::MixedSigmas(sigmas);
+  // check whether all the same entry
+  for (size_t j = 1; j < n; j++)
+    if (sigmas(j) != sigmas(0)) return makeFull();
+  return Isotropic::Sigma(n, sigmas(0), true);
 }
 
 /* ************************************************************************* */
