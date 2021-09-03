@@ -256,14 +256,17 @@ Diagonal::Diagonal(const Vector& sigmas)
 
 /* ************************************************************************* */
 Diagonal::shared_ptr Diagonal::Variances(const Vector& variances, bool smart) {
+  auto makeFull = [&] {
+    return Diagonal::shared_ptr(new Diagonal(variances.cwiseSqrt()));
+  };
   if (smart) {
     // check whether all the same entry
     size_t n = variances.size();
     for (size_t j = 1; j < n; j++)
-      if (variances(j) != variances(0)) goto full;
+      if (variances(j) != variances(0)) return makeFull();
     return Isotropic::Variance(n, variances(0), true);
   }
-  full: return shared_ptr(new Diagonal(variances.cwiseSqrt()));
+  return makeFull();
 }
 
 /* ************************************************************************* */
